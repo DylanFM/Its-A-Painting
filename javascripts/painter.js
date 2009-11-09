@@ -13,8 +13,10 @@ $(function() {
   // If there's a click in the painting
   $(painting.node).bind('click', function(e) {
     var coords = get_click_coordinates(e),
-        x = painting.circle(coords[0], coords[1], 10);
+        x;
     // Add a dot where they clicked
+    x = painting.circle(coords[0], coords[1], 2);
+    x.attr({ fill: "black" });
   });
   
 });
