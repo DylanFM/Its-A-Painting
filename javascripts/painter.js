@@ -3,10 +3,11 @@ $(function() {
   var painting = Raphael("painting", 900, 600),
       active = false;
   
-  var get_event_coordinates = function(event) {
+  var get_event_coordinates = function(e) {
+    var src = (e.srcElement || e.originalTarget.parentNode);
     // Return X and Y coordinates for this event
-    return [(event.pageX - event.srcElement.offsetLeft),
-            (event.pageY - event.srcElement.offsetTop)];
+    return [(e.pageX - src.offsetLeft),
+            (e.pageY - src.offsetTop)];
   };
   
   var circle_at = function(coords) {
