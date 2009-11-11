@@ -2,11 +2,13 @@ $(function() {
   
   var painting = Raphael("painting", 900, 600),
       active = false,
-      dots = [];
+      queue = [],
+      dots = [],
+      activity;
   
   // Get coords
   var get_event_coordinates = function(e) {
-    var src = (e.srcElement || e.originalTarget.parentNode);
+    var src = e.srcElement || e.originalTarget.parentNode;
     // Return X and Y coordinates for this event
     return [(e.pageX - src.offsetLeft),
             (e.pageY - src.offsetTop)];
@@ -15,6 +17,14 @@ $(function() {
   // Add a dot
   var paint = function(coords) {
     return painting.circle(coords[0], coords[1], 3).attr({ fill: "black" });
+  };
+  
+  var paint_from_queue = function() {
+    while (queue.length > 0) {
+      dot = queue.shift();
+      dot.point = paint(dot.coords);
+      dots.push(dot);
+    }
   };
   
   // When the mouse goes down we paint
@@ -29,20 +39,19 @@ $(function() {
   
   // When the mouse moves we might paint... it depends
   $(painting.node).bind("mousemove", function(e) {
-    var dot;
     if (active === true) {
-      dot = { coords: get_event_coordinates(e) };
-      dot.point = paint(dot.coords);
-      dots.push(dot);
+      queue.push({ coords: get_event_coordinates(e) });
     }
   });
   
+  // Poll queue for new dots to paint
+  activity = setInterval(paint_from_queue, 100);
+  
   // So one can remove their rubbish
   $("a#clear").bind("click", function(e) {
-    $.each(dots, function(i) {
-      this.point.remove();
-    })
-    dots = [];
+    while(dots.length > 0) {
+      dots.shift().point.remove();
+    }
     e.preventDefault();
   });
   
