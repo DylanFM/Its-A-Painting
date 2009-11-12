@@ -1,10 +1,11 @@
 $(function() {
   
-  var painting = Raphael("painting", 900, 600),
-      active = false,
+  var active = false,
       queue = [],
-      dots = [],
       activity;
+      
+      drops = [];
+      painting = Raphael("painting", 900, 600);
   
   // Get coords
   var get_event_coordinates = function(e) {
@@ -20,10 +21,15 @@ $(function() {
   };
   
   var paint_from_queue = function() {
-    while (queue.length > 0) {
-      dot = queue.shift();
-      dot.point = paint(dot.coords);
-      dots.push(dot);
+    var steps, first;
+    if (queue.length > 0) {
+      first = queue.shift();
+      steps = "M" + first.coords[0] + " " + first.coords[1];
+      while (queue.length > 0) {
+        point = queue.shift();
+        steps += "L" + point.coords[0] + " " + point.coords[1];
+      }
+      drops.push(painting.path(steps));
     }
   };
   
@@ -49,8 +55,8 @@ $(function() {
   
   // So one can remove their rubbish
   $("a#clear").bind("click", function(e) {
-    while(dots.length > 0) {
-      dots.shift().point.remove();
+    while(drops.length > 0) {
+      drops.shift().remove();
     }
     e.preventDefault();
   });
