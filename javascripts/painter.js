@@ -2,10 +2,10 @@ $(function() {
   
   var active = false,
       queue = [],
-      activity;
-      
-      drops = [];
-      painting = Raphael("painting", 900, 600);
+      drops = [],
+      painting = Raphael("painting", 900, 600),
+      activity,
+      last;
   
   // Get coords
   var get_event_coordinates = function(e) {
@@ -15,20 +15,19 @@ $(function() {
             (e.pageY - src.offsetTop)];
   };
   
-  // Add a dot
-  var paint = function(coords) {
-    return painting.circle(coords[0], coords[1], 3).attr({ fill: "black" });
-  };
-  
   var paint_from_queue = function() {
-    var steps, first;
+    var steps, initial;
     if (queue.length > 0) {
-      first = queue.shift();
-      steps = "M" + first.coords[0] + " " + first.coords[1];
-      while (queue.length > 0) {
-        point = queue.shift();
+      initial = last || queue.shift();
+      steps = "M" + initial.coords[0] + " " + initial.coords[1];
+      for (var i = 0; i < queue.length; i++) {
+        point = queue[i];
         steps += "L" + point.coords[0] + " " + point.coords[1];
+        if (i === (queue.length - 1)) {
+          last = point;
+        }
       }
+      queue = [];
       drops.push(painting.path(steps));
     }
   };
@@ -36,6 +35,7 @@ $(function() {
   // When the mouse goes down we paint
   $(painting.node).bind("mousedown", function(e) {
     active = true;
+    last = undefined;
   });
   
   // When the mouse goes up we don't paint
@@ -45,8 +45,12 @@ $(function() {
   
   // When the mouse moves we might paint... it depends
   $(painting.node).bind("mousemove", function(e) {
+    var coords;
     if (active === true) {
-      queue.push({ coords: get_event_coordinates(e) });
+      coords = get_event_coordinates(e);
+      if (coords) {
+        queue.push({ coords: coords });
+      }
     }
   });
   
