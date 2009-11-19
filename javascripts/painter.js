@@ -5,7 +5,9 @@ $(function() {
       drops = [],
       painting = Raphael("painting", 900, 600),
       activity,
-      last;
+      last,
+      colours = $(".colours a"),
+      colour = "black";
   
   // Get coords
   var get_event_coordinates = function(e) {
@@ -16,7 +18,7 @@ $(function() {
   };
   
   var paint_from_queue = function() {
-    var steps, initial;
+    var steps, initial, path;
     if (queue.length > 0) {
       initial = last || queue.shift();
       steps = "M" + initial.coords[0] + " " + initial.coords[1];
@@ -28,7 +30,8 @@ $(function() {
         }
       }
       queue = [];
-      drops.push(painting.path(steps));
+      path = painting.path(steps).attr({ "stroke-width": 2, "stroke": colour });
+      drops.push(path);
     }
   };
   
@@ -62,6 +65,15 @@ $(function() {
     while(drops.length > 0) {
       drops.shift().remove();
     }
+    e.preventDefault();
+  });
+  
+  // Support changning the colour
+  $(colours).bind('click', function(e) {
+    var handle = $(e.target);
+    colours.removeClass("active");
+    colour = $(handle).attr("class").replace("to-", "");
+    $(handle).addClass("active");
     e.preventDefault();
   });
   
