@@ -1,14 +1,57 @@
-$(function() {
-  
-  var active = false,
+var Painter = (function() {
+
+  var self,
+      controls,
+      opts,
+      active = false,
       queue = [],
       drops = [],
-      painting = Raphael("painting", 900, 600),
       activity,
       last,
-      colours = $(".colours a"),
-      colour = "black";
-  
+      colours,
+      colour;
+      
+  var attach_events = function() {
+    // When the mouse goes down we paint
+    $(self.painting.node).bind("mousedown", function(e) {
+      active = true;
+      last = undefined;
+    });
+
+    // When the mouse goes up we don't paint
+    $(self.painting.node).bind("mouseup", function(e) {
+      active = false;
+    });
+
+    // When the mouse moves we might paint... it depends
+    $(self.painting.node).bind("mousemove", function(e) {
+      var coords;
+      if (active === true) {
+        coords = get_event_coordinates(e);
+        if (coords) {
+          queue.push({ coords: coords });
+        }
+      }
+    });
+
+    // So one can remove their rubbish
+    $("a#clear").bind("click", function(e) {
+      while(drops.length > 0) {
+        drops.shift().remove();
+      }
+      e.preventDefault();
+    });
+
+    // Support changning the colour
+    $(colours).bind('click', function(e) {
+      var handle = $(e.target);
+      colours.removeClass("active");
+      colour = $(handle).attr("class").replace("to-", "");
+      $(handle).addClass("active");
+      e.preventDefault();
+    });
+  };
+
   // Get coords
   var get_event_coordinates = function(e) {
     var src = e.srcElement || e.originalTarget.parentNode;
@@ -16,7 +59,7 @@ $(function() {
     return [(e.pageX - src.offsetLeft),
             (e.pageY - src.offsetTop)];
   };
-  
+
   var paint_from_queue = function() {
     var steps, initial, path;
     if (queue.length > 0) {
@@ -30,51 +73,23 @@ $(function() {
         }
       }
       queue = [];
-      path = painting.path(steps).attr({ "stroke-width": 2, "stroke": colour });
+      path = self.painting.path(steps).attr({ "stroke-width": 2, "stroke": colour });
       drops.push(path);
     }
   };
   
-  // When the mouse goes down we paint
-  $(painting.node).bind("mousedown", function(e) {
-    active = true;
-    last = undefined;
-  });
+  return function(painting, controls, opts) {
+    self = this;
+    controls = controls;
+    opts = opts;
+    self.painting = Raphael(painting.attr("id"), opts.width, opts.height);
+    colours = controls.colours;
+    colour = opts.default_colour;
+    // Poll queue for new dots to paint
+    activity = setInterval(paint_from_queue, 100);
+    // Attach events
+    attach_events();
+    return painting;
+  };
   
-  // When the mouse goes up we don't paint
-  $(painting.node).bind("mouseup", function(e) {
-    active = false;
-  });
-  
-  // When the mouse moves we might paint... it depends
-  $(painting.node).bind("mousemove", function(e) {
-    var coords;
-    if (active === true) {
-      coords = get_event_coordinates(e);
-      if (coords) {
-        queue.push({ coords: coords });
-      }
-    }
-  });
-  
-  // Poll queue for new dots to paint
-  activity = setInterval(paint_from_queue, 100);
-  
-  // So one can remove their rubbish
-  $("a#clear").bind("click", function(e) {
-    while(drops.length > 0) {
-      drops.shift().remove();
-    }
-    e.preventDefault();
-  });
-  
-  // Support changning the colour
-  $(colours).bind('click', function(e) {
-    var handle = $(e.target);
-    colours.removeClass("active");
-    colour = $(handle).attr("class").replace("to-", "");
-    $(handle).addClass("active");
-    e.preventDefault();
-  });
-  
-});
+}());
