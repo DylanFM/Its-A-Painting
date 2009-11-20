@@ -1,15 +1,23 @@
 var Painter = (function() {
 
   var self,
-      controls,
-      opts,
       active = false,
       queue = [],
       drops = [],
       activity,
-      last,
-      colours,
-      colour;
+      last;
+  
+  var set_options = function(opts) {
+    self.opts = opts;
+    self.colour = self.opts.default_colour;
+  };
+      
+  var init_painting = function(painting) {
+    // Make the raphael canvas
+    self.painting = Raphael(painting.attr("id"), self.opts.width, self.opts.height);
+    // Poll queue for new dots to paint
+    activity = setInterval(paint_from_queue, 100);
+  };
       
   var attach_events = function() {
     // When the mouse goes down we paint
@@ -33,26 +41,36 @@ var Painter = (function() {
         }
       }
     });
-
+  };
+  
+  var setup_controls = function(controls) {
+    self.controls = controls;
+    add_clear_functionality();
+    add_colour_selection();
+  };
+  
+  var add_clear_functionality = function() {
     // So one can remove their rubbish
-    $("a#clear").bind("click", function(e) {
+    $(self.controls.clear).bind("click", function(e) {
       while(drops.length > 0) {
         drops.shift().remove();
       }
       e.preventDefault();
     });
-
+  };
+  
+  var add_colour_selection = function() {
+    self.colours = self.controls.colours;
     // Support changning the colour
-    $(colours).bind('click', function(e) {
+    $(self.colours).bind('click', function(e) {
       var handle = $(e.target);
-      colours.removeClass("active");
-      colour = $(handle).attr("class").replace("to-", "");
+      self.colours.removeClass("active");
+      self.colour = $(handle).attr("class").replace("to-", "");
       $(handle).addClass("active");
       e.preventDefault();
     });
   };
 
-  // Get coords
   var get_event_coordinates = function(e) {
     var src = e.srcElement || e.originalTarget.parentNode;
     // Return X and Y coordinates for this event
@@ -73,23 +91,23 @@ var Painter = (function() {
         }
       }
       queue = [];
-      path = self.painting.path(steps).attr({ "stroke-width": 2, "stroke": colour });
+      path = self.painting.path(steps).attr({ "stroke-width": 2, "stroke": self.colour });
       drops.push(path);
     }
   };
   
   return function(painting, controls, opts) {
     self = this;
-    controls = controls;
-    opts = opts;
-    self.painting = Raphael(painting.attr("id"), opts.width, opts.height);
-    colours = controls.colours;
-    colour = opts.default_colour;
-    // Poll queue for new dots to paint
-    activity = setInterval(paint_from_queue, 100);
+    // Sort out the options
+    set_options(opts);
+    // Initialise the painting
+    init_painting(painting);
     // Attach events
     attach_events();
-    return painting;
+    // Controls for interface
+    setup_controls(controls);
+    // Pass the painting back
+    return self.painting;
   };
   
 }());
