@@ -76,19 +76,28 @@ var Painter = (function() {
       has_moved = false;
       last = undefined;
     });
+    
+    $(self.painting.node).bind("mouseout", function(e) {
+      active = false;
+      add_to_queue({ type: "nil" });
+    });
 
     // When the mouse goes up we don't paint
     $(self.painting.node).bind("mouseup", function(e) {
-      if (has_moved === false) {
-        enqueue_coords(e, "dot");
+      if (e.target.localName === "svg") {
+        if (has_moved === false) {
+          enqueue_coords(e, "dot");
+        }
+        add_to_queue({ type: "nil" }); 
       }
-      add_to_queue({ type: "nil" });
       active = false;
     });
 
     // When the mouse moves we might paint... it depends
     $(self.painting.node).bind("mousemove", function(e) {
-      enqueue_coords(e, "line");
+      if (e.target.localName === "svg") {
+        enqueue_coords(e, "line");
+      }
     });
   };
   
@@ -174,7 +183,9 @@ var Painter = (function() {
       initial = queue.shift();
       new_one = drawing_types[initial.type](initial);
       if (new_one) {
-        drops.push(new_one.added);
+        if (new_one.added) {
+          drops.push(new_one.added);
+        }
         history.push(new_one.action);
       }
     }
