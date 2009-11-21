@@ -10,8 +10,7 @@ html body * span.clear,html body * div.clear,html body * li.clear,html body * dd
   .colours {height:18px}
     .colours li {float:left;margin-right:10px}
       .colours a {display:block;text-indent:-999em;width:16px;height:16px;background-color:black}
-      .colours a:link, .colours a:visited {border:1px solid #fff}
-      .colours a:hover {border-color:#333}
-      .colours a.active:link, .colours a.active:visited, .colours a.active:active, .colours a.active:hover, .colours a.active:focus {border-color:#000}
+      .colours a:link, .colours a:visited {border:2px solid #fff}
+      .colours a:hover, .colours a.active:link, .colours a.active:visited, .colours a.active:active, .colours a.active:hover, .colours a.active:focus {border-color:#aaa}
       .colours .to-blue {background-color:blue}
       .colours .to-red {background-color:red}

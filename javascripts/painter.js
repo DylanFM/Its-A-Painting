@@ -59,13 +59,20 @@ var Painter = (function() {
     });
   };
   
+  var select_current_colour = function() {
+    self.colours.removeClass("active");
+    $(self.colours).filter(".to-" + self.colour).addClass("active");
+  };
+  
   var add_colour_selection = function() {
     self.colours = self.controls.colours;
+    // Select the default colour
+    select_current_colour();
     // Support changning the colour
     $(self.colours).bind('click', function(e) {
       var handle = $(e.target);
-      self.colours.removeClass("active");
       self.colour = $(handle).attr("class").replace("to-", "");
+      select_current_colour();
       $(handle).addClass("active");
       e.preventDefault();
     });
