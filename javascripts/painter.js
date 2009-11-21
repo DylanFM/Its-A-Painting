@@ -10,30 +10,42 @@ var Painter = (function() {
       last;
       
   var drawing_types = {
-    nil: function(point) {
+    nil: function() {
       last = false;
-      return true;
+      return {
+        added: undefined,
+        action: {
+          type: "nil"
+        }
+      };
     },
-    line: function(from) {
-      var to = queue.shift(),
-          action,
-          steps;
-      if (to) {
-        action = {
-          type: "line",
-          points: [from, to]
-        };
-        steps = "M" + from.coords[0] + " " + from.coords[1] + "L" + to.coords[0] + " " + to.coords[1];
-        action.points.push(from);
-        action.points.push(to);
-        last = to; 
-        return {
-          added: self.painting.path(steps).attr({ "stroke-width": 2, "stroke": to.colour }),
-          action: action
-        };
+    line: function(point) {
+      var steps,
+          action = {
+            type: "line",
+            points: []
+          },
+          to,
+          from;
+      if (last) {
+        from = last;
+        to = point;
       } else {
-        return false;
+        from = point;
+        to = queue.shift();
       }
+      steps = "M" + from.coords[0] + " " + from.coords[1];
+      action.points.push(from);
+      while (to && to.type === "line") {
+        steps += "L" + to.coords[0] + " " + to.coords[1];
+        last = to;
+        action.points.push(to);
+        to = queue.shift();
+      }
+      return {
+        added: self.painting.path(steps).attr({ "stroke-width": 2, "stroke": from.colour }),
+        action: action
+      };
     },
     dot: function(point) {
       var added = self.painting.circle(point.coords[0], point.coords[1], 1);
@@ -69,9 +81,8 @@ var Painter = (function() {
     $(self.painting.node).bind("mouseup", function(e) {
       if (has_moved === false) {
         enqueue_coords(e, "dot");
-      } else {
-        enqueue_coords(e, "nil");
       }
+      add_to_queue({ type: "nil" });
       active = false;
     });
 
@@ -120,8 +131,12 @@ var Painter = (function() {
   var add_clear_functionality = function() {
     // So one can remove their rubbish
     $(self.controls.clear).bind("click", function(e) {
+      var drop;
       while(drops.length > 0) {
-        drops.shift().remove();
+        drop = drops.shift();
+        if (drop && typeof drop.remove === "function") {
+          drop.remove();
+        }
       }
       e.preventDefault();
     });
@@ -154,11 +169,11 @@ var Painter = (function() {
   };
 
   var paint_from_queue = function() {
-    var steps, initial, added, action;
+    var initial, new_one;
     if (queue.length > 0) {
-      initial = last || queue.shift();
+      initial = queue.shift();
       new_one = drawing_types[initial.type](initial);
-      if (new_one && new_one.added) {
+      if (new_one) {
         drops.push(new_one.added);
         history.push(new_one.action);
       }
