@@ -23,6 +23,7 @@ var Painter = (function() {
     // When the mouse goes down we paint
     $(self.painting.node).bind("mousedown", function(e) {
       active = true;
+      enqueue_coords(e, "dot");
       last = undefined;
     });
 
@@ -33,16 +34,22 @@ var Painter = (function() {
 
     // When the mouse moves we might paint... it depends
     $(self.painting.node).bind("mousemove", function(e) {
-      if (active === true) {
-        add_to_queue(get_event_coordinates(e));
-      }
+      enqueue_coords(e, "line");
     });
   };
   
-  var add_to_queue = function(coords) {
-    if (coords) {
-      queue.push({ coords: coords });
+  var enqueue_coords = function(e, type) {
+    var coords;
+    if (active === true) {
+      coords = get_event_coordinates(e);
+      if (coords) {
+        add_to_queue({ coords: coords, type: type });
+      }
     }
+  };
+  
+  var add_to_queue = function(obj) {
+    queue.push(obj);
   };
   
   var setup_controls = function(controls) {
@@ -88,20 +95,30 @@ var Painter = (function() {
   };
 
   var paint_from_queue = function() {
-    var steps, initial, path;
+    var steps, initial, added;
     if (queue.length > 0) {
       initial = last || queue.shift();
-      steps = "M" + initial.coords[0] + " " + initial.coords[1];
-      for (var i = 0; i < queue.length; i++) {
-        point = queue[i];
-        steps += "L" + point.coords[0] + " " + point.coords[1];
-        if (i === (queue.length - 1)) {
-          last = point;
-        }
+      switch (initial.type) {
+        case "line":
+          steps = "M" + initial.coords[0] + " " + initial.coords[1];
+          for (var i = 0; i < queue.length; i++) {
+            point = queue[i];
+            steps += "L" + point.coords[0] + " " + point.coords[1];
+            if (i === (queue.length - 1)) {
+              last = point;
+            }
+          }
+          queue = [];
+          added = self.painting.path(steps).attr({ "stroke-width": 2, "stroke": self.colour });
+          break;
+        case "dot":
+          added = self.painting.circle(initial.coords[0], initial.coords[1], 1);
+          added.attr({ fill: self.colour, stroke: self.colour });
+          break;
       }
-      queue = [];
-      path = self.painting.path(steps).attr({ "stroke-width": 2, "stroke": self.colour });
-      drops.push(path);
+      if (added) {
+        drops.push(added);
+      }
     }
   };
   
