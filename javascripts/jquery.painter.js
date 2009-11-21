@@ -7,7 +7,7 @@
       controls = controls;
       opts = $.extend({}, $.fn.isAPainting.defaults, options);
       painting = new Painter(this, controls, opts);
-      return painting.node || false;
+      return painting || false;
     }
   });
   

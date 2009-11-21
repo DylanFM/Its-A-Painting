@@ -5,6 +5,7 @@ var Painter = (function() {
       has_moved = false,
       queue = [],
       drops = [],
+      history = [],
       activity,
       last;
   
@@ -100,14 +101,19 @@ var Painter = (function() {
   };
 
   var paint_from_queue = function() {
-    var steps, initial, added;
+    var steps, initial, added, action;
     if (queue.length > 0) {
       initial = last || queue.shift();
       switch (initial.type) {
         case "line":
+          action = {
+            type: "line",
+            points: [initial]
+          };
           steps = "M" + initial.coords[0] + " " + initial.coords[1];
           for (var i = 0; i < queue.length; i++) {
             point = queue[i];
+            action.points.push(point);
             steps += "L" + point.coords[0] + " " + point.coords[1];
             if (i === (queue.length - 1)) {
               last = point;
@@ -119,10 +125,12 @@ var Painter = (function() {
         case "dot":
           added = self.painting.circle(initial.coords[0], initial.coords[1], 1);
           added.attr({ fill: self.colour, stroke: self.colour });
+          action = initial;
           break;
       }
       if (added) {
         drops.push(added);
+        history.push(action);
       }
     }
   };
@@ -137,8 +145,12 @@ var Painter = (function() {
     attach_events();
     // Controls for interface
     setup_controls(controls);
-    // Pass the painting back
-    return self.painting;
+    // Allow access to history
+    this.history = history;
+    // Allow access to queue for the time being
+    this.queue = queue;
+    // Pass this
+    return this;
   };
   
 }());
