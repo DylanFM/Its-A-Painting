@@ -8,6 +8,42 @@ var Painter = (function() {
       history = [],
       activity,
       last;
+      
+  var drawing_types = {
+    nil: function(point) {
+      last = false;
+      return true;
+    },
+    line: function(from) {
+      var to = queue.shift(),
+          action,
+          steps;
+      if (to) {
+        action = {
+          type: "line",
+          points: [from, to]
+        };
+        steps = "M" + from.coords[0] + " " + from.coords[1] + "L" + to.coords[0] + " " + to.coords[1];
+        action.points.push(from);
+        action.points.push(to);
+        last = to; 
+        return {
+          added: self.painting.path(steps).attr({ "stroke-width": 2, "stroke": to.colour }),
+          action: action
+        };
+      } else {
+        return false;
+      }
+    },
+    dot: function(point) {
+      var added = self.painting.circle(point.coords[0], point.coords[1], 1);
+      added.attr({ fill: point.colour, stroke: point.colour });
+      return {
+        added: added,
+        action: point
+      };
+    }
+  };
   
   var set_options = function(opts) {
     self.opts = opts;
@@ -33,6 +69,8 @@ var Painter = (function() {
     $(self.painting.node).bind("mouseup", function(e) {
       if (has_moved === false) {
         enqueue_coords(e, "dot");
+      } else {
+        enqueue_coords(e, "nil");
       }
       active = false;
     });
@@ -49,13 +87,28 @@ var Painter = (function() {
       has_moved = true;
       coords = get_event_coordinates(e);
       if (coords) {
-        add_to_queue({ coords: coords, type: type });
+        add_to_queue({ coords: coords, type: type, colour: self.colour });
       }
     }
   };
   
   var add_to_queue = function(obj) {
     queue.push(obj);
+  };
+  
+  var add_many_to_queue = function(steps) {
+    $.each(steps, function(i) {
+      switch (this.type) {
+        case "line":
+          $.each(this.points, function(i) {
+            add_to_queue(this);
+          });
+          break;
+        default:
+          // nil or dot
+          add_to_queue(this);
+      }
+    });
   };
   
   var setup_controls = function(controls) {
@@ -104,34 +157,17 @@ var Painter = (function() {
     var steps, initial, added, action;
     if (queue.length > 0) {
       initial = last || queue.shift();
-      switch (initial.type) {
-        case "line":
-          action = {
-            type: "line",
-            points: [initial]
-          };
-          steps = "M" + initial.coords[0] + " " + initial.coords[1];
-          for (var i = 0; i < queue.length; i++) {
-            point = queue[i];
-            action.points.push(point);
-            steps += "L" + point.coords[0] + " " + point.coords[1];
-            if (i === (queue.length - 1)) {
-              last = point;
-            }
-          }
-          queue = [];
-          added = self.painting.path(steps).attr({ "stroke-width": 2, "stroke": self.colour });
-          break;
-        case "dot":
-          added = self.painting.circle(initial.coords[0], initial.coords[1], 1);
-          added.attr({ fill: self.colour, stroke: self.colour });
-          action = initial;
-          break;
+      new_one = drawing_types[initial.type](initial);
+      if (new_one && new_one.added) {
+        drops.push(new_one.added);
+        history.push(new_one.action);
       }
-      if (added) {
-        drops.push(added);
-        history.push(action);
-      }
+    }
+  };
+  
+  var requeue_history = function() {
+    if (history && history.length > 0) {
+      add_many_to_queue(history);
     }
   };
   
@@ -145,10 +181,13 @@ var Painter = (function() {
     attach_events();
     // Controls for interface
     setup_controls(controls);
-    // Allow access to history
+    
+    // Public methods
     this.history = history;
-    // Allow access to queue for the time being
     this.queue = queue;
+    this.drops = drops;
+    this.requeue_history = requeue_history;
+    
     // Pass this
     return this;
   };
