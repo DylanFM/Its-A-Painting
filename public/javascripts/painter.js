@@ -84,20 +84,19 @@ var Painter = (function() {
 
     // When the mouse goes up we don't paint
     $(self.painting.node).bind("mouseup", function(e) {
-      if (e.target.localName === "svg") {
+      // if (e.target.localName === "svg") {
         if (has_moved === false) {
           enqueue_coords(e, "dot");
         }
         add_to_queue({ type: "nil" }); 
-      }
+      // }
       active = false;
     });
 
     // When the mouse moves we might paint... it depends
     $(self.painting.node).bind("mousemove", function(e) {
-      if (e.target.localName === "svg") {
+      // if (e.target.localName === "svg") {
         enqueue_coords(e, "line");
-      }
     });
   };
   
