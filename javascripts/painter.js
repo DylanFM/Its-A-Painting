@@ -2,6 +2,7 @@ var Painter = (function() {
 
   var self,
       active = false,
+      has_moved = false,
       queue = [],
       drops = [],
       activity,
@@ -23,12 +24,15 @@ var Painter = (function() {
     // When the mouse goes down we paint
     $(self.painting.node).bind("mousedown", function(e) {
       active = true;
-      enqueue_coords(e, "dot");
+      has_moved = false;
       last = undefined;
     });
 
     // When the mouse goes up we don't paint
     $(self.painting.node).bind("mouseup", function(e) {
+      if (has_moved === false) {
+        enqueue_coords(e, "dot");
+      }
       active = false;
     });
 
@@ -41,6 +45,7 @@ var Painter = (function() {
   var enqueue_coords = function(e, type) {
     var coords;
     if (active === true) {
+      has_moved = true;
       coords = get_event_coordinates(e);
       if (coords) {
         add_to_queue({ coords: coords, type: type });
