@@ -33,14 +33,16 @@ var Painter = (function() {
 
     // When the mouse moves we might paint... it depends
     $(self.painting.node).bind("mousemove", function(e) {
-      var coords;
       if (active === true) {
-        coords = get_event_coordinates(e);
-        if (coords) {
-          queue.push({ coords: coords });
-        }
+        add_to_queue(get_event_coordinates(e));
       }
     });
+  };
+  
+  var add_to_queue = function(coords) {
+    if (coords) {
+      queue.push({ coords: coords });
+    }
   };
   
   var setup_controls = function(controls) {
