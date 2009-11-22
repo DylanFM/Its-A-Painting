@@ -59,8 +59,8 @@ a:active, a:hover, a:focus {color:#d45500}
   h1 {float:left;font-family:"Fertigo Pro","Lucida Grande","Lucida Sans Unicode",sans-serif}
     h1 a:link, h1 a:visited {color:#4F1F00;text-decoration:none}
   #content {clear:both}
-    a.start-painting {float:left;margin:7px 0 0 30px}
-    a#clear {float:right;margin-bottom:9px}
+    a.start-painting {float:left;margin:7px 0 0 35px}
+    a#clear {float:right;margin-top:7px}
 
     .paintings-list {list-style:disc}
 
@@ -73,3 +73,11 @@ a:active, a:hover, a:focus {color:#d45500}
         .colours a:hover, .colours a.active:link, .colours a.active:visited, .colours a.active:active, .colours a.active:hover, .colours a.active:focus {border-color:#aaa}
         .colours .to-blue {background-color:blue}
         .colours .to-red {background-color:red}
+        .colours .to-white {background-color:white}
+        .colours .to-grey {background-color:grey}
+        .colours .to-pink {background-color:pink}
+        .colours .to-purple {background-color:purple}
+        .colours .to-green {background-color:green}
+        .colours .to-brown {background-color:brown}
+        .colours .to-orange {background-color:orange}
+        .colours .to-yellow {background-color:yellow}
