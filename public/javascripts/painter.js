@@ -109,10 +109,20 @@ var Painter = (function() {
     if (active === true) {
       has_moved = true;
       coords = get_event_coordinates(e);
-      if (coords) {
+      if (coords && coords_are_valid(e, coords)) {
         add_to_queue({ coords: coords, type: type, colour: self.colour, brush_size: self.brush_size });
       }
     }
+  };
+  
+  var coords_are_valid = function(e, coords) {
+    // Sometimes we get some weirdness, like when clicking controls and having things pop up in the painting
+    // We need to make sure that the coords are within the canvas
+    var src = get_event_source(e),
+        top_left = [src.offsetLeft, src.offsetTop],
+        bottom_right = [(src.offsetLeft + src.clientWidth), (src.offsetTop + src.clientHeight)];
+    return coords[0] >= top_left[0] && coords[0] <= bottom_right[0] 
+        && coords[1] >= top_left[1] && coords[1] <= bottom_right[1];
   };
   
   var add_to_queue = function(obj) {
@@ -194,8 +204,12 @@ var Painter = (function() {
     });
   };
 
+  var get_event_source = function(e) {
+    return e.srcElement || e.originalTarget.parentNode;
+  };
+  
   var get_event_coordinates = function(e) {
-    var src = e.srcElement || e.originalTarget.parentNode;
+    var src = get_event_source(e);
     // Return X and Y coordinates for this event
     return [(e.pageX - src.offsetLeft),
             (e.pageY - src.offsetTop)];
