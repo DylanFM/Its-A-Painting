@@ -212,10 +212,10 @@ var Painter = (function() {
   };
   
   var get_event_coordinates = function(e) {
+// Return X and Y coordinates for this event
     var src = get_event_source(e);
-    // Return X and Y coordinates for this event
-    return [(e.pageX - src.offsetLeft),
-            (e.pageY - src.offsetTop)];
+    return [(e.pageX - (src.offsetLeft > 0 ? src.offsetLeft : src.offsetParent.offsetLeft)),
+            (e.pageY - (src.offsetTop > 0 ? src.offsetTop : src.offsetParent.offsetTop))];
   };
 
   var paint_from_queue = function() {
