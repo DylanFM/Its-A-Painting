@@ -67,7 +67,7 @@ var Painter = (function() {
     // Make the raphael canvas
     self.painting = Raphael(painting.attr("id"), self.opts.width, self.opts.height);
     // Poll queue for new dots to paint
-    activity = setInterval(paint_from_queue, 100);
+    activity = setInterval(paint_from_queue, 20);
   };
       
   var attach_events = function() {

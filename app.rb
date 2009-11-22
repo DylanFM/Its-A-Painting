@@ -22,12 +22,18 @@ end
 
 get '/paintings/:id' do
   @painting = Painting.get(params[:id])
-  haml :"paintings/show"
+  if @painting
+    @title = "called &ldquo;#{@painting.name}&rdquo;"
+    haml :"paintings/show"
+  else
+    not_found()
+  end
 end
 
 post '/paintings/:id/history/update' do
   painting = Painting.get(params[:id])
   if painting
+    painting.actions.all.destroy!
     errors = []
     history = JSON(params[:history])
     history.each do |a|
