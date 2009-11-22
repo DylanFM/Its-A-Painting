@@ -60,6 +60,7 @@ body {background-color:#eee}
 
     h1 {float:left;font-family:"Fertigo Pro","Lucida Grande","Lucida Sans Unicode",sans-serif}
       h1 a:link, h1 a:visited {color:#4F1F00;text-decoration:none}
+      h1 a:active, h1 a:hover, h1 a:focus {color:#d45500}
     #content {clear:both}
       a.start-painting {float:left;margin:7px 0 0 35px}
 
@@ -71,12 +72,12 @@ body {background-color:#eee}
 
       #painting {clear:both;width:900px;height:600px;margin:0 0 9px 0;cursor:crosshair;background-color:#fff;border:1px solid #CCD9E2}
 
-      .controls {padding:9px;-moz-border-radius:6px;-webkit-border-radius:6px;border-radius:6px;background-color:#ddd}
+      .controls {padding:9px;-moz-border-radius:6px;-webkit-border-radius:6px;border-radius:6px;background-color:#ccc}
 
         .colours {height:18px;list-style:none;margin-top:-2px}
           .colours li {float:left;margin-right:10px}
             .colours a {display:block;text-indent:-999em;width:12px;height:12px;background-color:black;-moz-border-radius:12px;-webkit-border-radius:10px;border-radius:10px}
-            .colours a:link, .colours a:visited {border:4px solid #ddd}
+            .colours a:link, .colours a:visited {border:4px solid #ccc}
             .colours a:hover, .colours a.active:link, .colours a.active:visited, .colours a.active:active, .colours a.active:hover, .colours a.active:focus {border-color:transparent}
             .colours .to-blue {background-color:blue}
             .colours .to-red {background-color:red}

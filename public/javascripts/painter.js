@@ -73,7 +73,7 @@ var Painter = (function() {
       paint_from_queue();
     }
     // Poll queue for new dots to paint
-    activity = setInterval(paint_from_queue, 20);
+    activity = setInterval(paint_from_queue, 100);
   };
       
   var attach_events = function() {
@@ -212,6 +212,8 @@ var Painter = (function() {
           if (new_one) {
             if (new_one.added) {
               drops.push(new_one.added);
+              // Safari thing
+              self.painting.safari();
             }
             history.push(new_one.action);
           }
