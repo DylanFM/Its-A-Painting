@@ -25,10 +25,25 @@ get '/paintings/:id' do
   haml :"paintings/show"
 end
 
-post '/paintings/:id/actions/new' do
-
+post '/paintings/:id/history/update' do
+  painting = Painting.get(params[:id])
+  if painting
+    painting.history = params[:history]
+    if painting.save
+      "Painting history saved"
+    else
+      "Painting history was not saved"
+    end
+  else
+    "Painting not found"
+  end
 end
 
-get '/paintings/:id/actions' do
-
+get '/paintings/:id/history' do
+  painting = Painting.get(params[:id])
+  if painting
+    painting.history
+  else
+    "Painting not found"
+  end
 end

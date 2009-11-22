@@ -211,6 +211,7 @@ var Painter = (function() {
     this.history = history;
     this.queue = queue;
     this.drops = drops;
+    this.add_many_to_queue = add_many_to_queue;
     this.requeue_history = requeue_history;
     
     // Pass this
