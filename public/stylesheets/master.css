@@ -69,22 +69,24 @@ body {background-color:#eee}
 
       .paintings-list {list-style:disc}
 
-      #painting {clear:both;width:900px;height:600px;margin:0 0 9px 0;cursor:crosshair;background-color:#fff}
+      #painting {clear:both;width:900px;height:600px;margin:0 0 9px 0;cursor:crosshair;background-color:#fff;border:1px solid #CCD9E2}
 
-      .colours {height:18px;list-style:none}
-        .colours li {float:left;margin-right:10px}
-          .colours a {display:block;text-indent:-999em;width:16px;height:16px;background-color:black}
-          .colours a:link, .colours a:visited {border:2px solid #fff}
-          .colours a:hover, .colours a.active:link, .colours a.active:visited, .colours a.active:active, .colours a.active:hover, .colours a.active:focus {border-color:#aaa}
-          .colours .to-blue {background-color:blue}
-          .colours .to-red {background-color:red}
-          .colours .to-white {background-color:white}
-          .colours .to-grey {background-color:grey}
-          .colours .to-pink {background-color:pink}
-          .colours .to-purple {background-color:purple}
-          .colours .to-green {background-color:green}
-          .colours .to-brown {background-color:brown}
-          .colours .to-orange {background-color:orange}
-          .colours .to-yellow {background-color:yellow}
+      .controls {padding:9px;-moz-border-radius:6px;-webkit-border-radius:6px;border-radius:6px;background-color:#ddd}
 
-      #slider {width:300px;float:right;margin-top:-12px}
+        .colours {height:18px;list-style:none;margin-top:-2px}
+          .colours li {float:left;margin-right:10px}
+            .colours a {display:block;text-indent:-999em;width:16px;height:16px;background-color:black}
+            .colours a:link, .colours a:visited {border:2px solid #fff}
+            .colours a:hover, .colours a.active:link, .colours a.active:visited, .colours a.active:active, .colours a.active:hover, .colours a.active:focus {border-color:#aaa}
+            .colours .to-blue {background-color:blue}
+            .colours .to-red {background-color:red}
+            .colours .to-white {background-color:white}
+            .colours .to-grey {background-color:grey}
+            .colours .to-pink {background-color:pink}
+            .colours .to-purple {background-color:purple}
+            .colours .to-green {background-color:green}
+            .colours .to-brown {background-color:brown}
+            .colours .to-orange {background-color:orange}
+            .colours .to-yellow {background-color:yellow}
+
+        #slider {width:300px;float:right;margin-top:-14px}
