@@ -1,4 +1,8 @@
+- content_for :before_content do
+  %a.awesome.orange.start-painting{ :href => "/paintings/new", :title => "Start a new painting" } Start painting
+
 - if !@paintings.empty?
+  %h3 Check out our gallery&hellip;
   %ul.paintings-list
     - @paintings.each do |painting|
       %li

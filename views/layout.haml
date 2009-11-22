@@ -4,15 +4,12 @@
     %meta{ :content => "text/html; charset=utf-8", "http-equiv" => "Content-Type" }
     %title It's a painting
     %link{ :href => "/stylesheets/master.css", :rel => "stylesheet", :type => "text/css", :media => "all", :charset => "utf-8" }
-    %script{ :src => "/javascripts/jquery-1.3.2.js", :type => "text/javascript", :charset => "utf-8" }
-    %script{ :src => "/javascripts/raphael.js", :type => "text/javascript", :charset => "utf-8" }
-    %script{ :src => "/javascripts/raphael.path.methods.js", :type => "text/javascript", :charset => "utf-8" }
-    %script{ :src => "/javascripts/Painter.js", :type => "text/javascript", :charset => "utf-8" }
-    %script{ :src => "/javascripts/jquery.painter.js", :type => "text/javascript", :charset => "utf-8" }
-    %script{ :src => "/javascripts/application.js", :type => "text/javascript", :charset => "utf-8" }
+
+    = yield_content :in_head
 
   %body
     .container
       %h1
         %a{ :href => "/", :title => "Back to home", :rel => "home" } It's a painting
+      = yield_content :before_content
       #content= yield
