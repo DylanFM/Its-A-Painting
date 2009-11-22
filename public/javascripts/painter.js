@@ -82,6 +82,7 @@ var Painter = (function() {
       active = true;
       has_moved = false;
       last = undefined;
+      e.preventDefault();
     });
     
     $(self.painting_surface).bind("mouseout", function(e) {
@@ -96,11 +97,13 @@ var Painter = (function() {
       }
       add_to_queue({ type: "nil" }); 
       active = false;
+      e.preventDefault();
     });
 
     // When the mouse moves we might paint... it depends
     $(self.painting_surface).bind("mousemove", function(e) {
       enqueue_coords(e, "line");
+      e.preventDefault();
     });
   };
   
@@ -116,7 +119,7 @@ var Painter = (function() {
   };
   
   var coords_are_valid = function(e, coords) {
-    // Sometimes we get some weirdness, like when clicking controls and having things pop up in the painting
+    // Sometimes we get weirdness when clicking controls and having stuff then painted
     // We need to make sure that the coords are within the canvas
     var src = get_event_source(e),
         top_left = [src.offsetLeft, src.offsetTop],
