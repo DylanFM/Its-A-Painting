@@ -25,7 +25,8 @@ $(function() {
   // This is the painting
   painting = $(canvas).isAPainting({
     clear: $("#clear"),
-    colours: $(".colours a")
+    colours: $(".colours a"),
+    brush_size: $("#slider")
   });
   
   $("#save").bind('click', function(event) {

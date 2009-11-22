@@ -13,6 +13,8 @@
   
   $.fn.isAPainting.defaults = {
     default_colour: "black",
+    default_brush_size: 8,
+    default_max_brush_size: 80,
     width: 900,
     height: 600
   };

@@ -44,13 +44,14 @@ var Painter = (function() {
         to = queue.shift();
       }
       return {
-        added: self.painting.path(steps).attr({ "stroke-width": 2, "stroke": from.colour }),
+        added: self.painting.path(steps).attr({ "stroke-width": from.brush_size, "stroke": from.colour }),
         action: action
       };
     },
     dot: function(point) {
-      var added = self.painting.circle(point.coords[0], point.coords[1], 1);
-      added.attr({ fill: point.colour, stroke: point.colour });
+      var brush_size = point.brush_size || self.brush_size,
+          added = self.painting.circle(point.coords[0], point.coords[1], brush_size);
+      added.attr({ fill: point.colour, stroke: point.colour, brush_size: brush_size });
       return {
         added: added,
         action: point
@@ -85,19 +86,16 @@ var Painter = (function() {
 
     // When the mouse goes up we don't paint
     $(self.painting.node).bind("mouseup", function(e) {
-      // if (e.target.localName === "svg") {
-        if (has_moved === false) {
-          enqueue_coords(e, "dot");
-        }
-        add_to_queue({ type: "nil" }); 
-      // }
+      if (has_moved === false) {
+        enqueue_coords(e, "dot");
+      }
+      add_to_queue({ type: "nil" }); 
       active = false;
     });
 
     // When the mouse moves we might paint... it depends
     $(self.painting.node).bind("mousemove", function(e) {
-      // if (e.target.localName === "svg") {
-        enqueue_coords(e, "line");
+      enqueue_coords(e, "line");
     });
   };
   
@@ -107,7 +105,7 @@ var Painter = (function() {
       has_moved = true;
       coords = get_event_coordinates(e);
       if (coords) {
-        add_to_queue({ coords: coords, type: type, colour: self.colour });
+        add_to_queue({ coords: coords, type: type, colour: self.colour, brush_size: self.brush_size });
       }
     }
   };
@@ -136,6 +134,22 @@ var Painter = (function() {
     self.controls = controls;
     add_clear_functionality();
     add_colour_selection();
+    add_brush_size_functionality();
+  };
+  
+  var add_brush_size_functionality = function() {
+    $(self.controls.brush_size).slider({ 
+        value: self.opts.default_brush_size, 
+        max: self.opts.default_max_brush_size,
+        change: function(event, ui) {
+          set_brush_size($(this).slider("value"));
+        }
+      });
+    set_brush_size($(self.controls.brush_size).slider("value"));
+  };
+  
+  var set_brush_size = function(size) {
+    self.brush_size = size;
   };
   
   var add_clear_functionality = function() {
