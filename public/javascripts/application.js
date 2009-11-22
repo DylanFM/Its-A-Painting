@@ -27,6 +27,8 @@ $(function() {
     clear: $("#clear"),
     colours: $(".colours a"),
     brush_size: $("#slider")
+  }, {
+    state: state
   });
   
   $("#save").bind('click', function(event) {

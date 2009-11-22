@@ -67,6 +67,11 @@ var Painter = (function() {
   var init_painting = function(painting) {
     // Make the raphael canvas
     self.painting = Raphael(painting.attr("id"), self.opts.width, self.opts.height);
+    // If there's a state supplied, add it to the queue
+    if (self.opts.state !== undefined) {
+      add_many_to_queue(self.opts.state);
+      paint_from_queue();
+    }
     // Poll queue for new dots to paint
     activity = setInterval(paint_from_queue, 20);
   };
