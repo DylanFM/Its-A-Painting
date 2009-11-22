@@ -70,7 +70,10 @@ body {background-color:#eee}
 
       .paintings-list {list-style:disc}
 
-      #painting {clear:both;width:900px;height:600px;margin:0 0 9px 0;cursor:crosshair;background-color:#fff;border:1px solid #CCD9E2}
+      #studio {clear:both;width:900px;height:600px;position:relative;margin:-9px 0 9px 0;background-color:#fff}
+      #painting, #painting_surface {width:100%;height:100%;position:absolute;top:0;left:0}
+      #painting {z-index:20}
+      #painting_surface {cursor:crosshair;border:1px solid #CCD9E2;background-color:transparent;z-index:40}
 
       .controls {padding:9px;-moz-border-radius:6px;-webkit-border-radius:6px;border-radius:6px;background-color:#ccc}
 

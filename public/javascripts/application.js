@@ -26,7 +26,8 @@ $(function() {
   painting = $(canvas).isAPainting({
     clear: $("#clear"),
     colours: $(".colours a"),
-    brush_size: $("#slider")
+    brush_size: $("#slider"),
+    painting_surface: $("#painting_surface")
   }, {
     state: state
   });

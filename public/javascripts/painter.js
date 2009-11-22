@@ -78,19 +78,19 @@ var Painter = (function() {
       
   var attach_events = function() {
     // When the mouse goes down we paint
-    $(self.painting.node).bind("mousedown", function(e) {
+    $(self.painting_surface).bind("mousedown", function(e) {
       active = true;
       has_moved = false;
       last = undefined;
     });
     
-    $(self.painting.node).bind("mouseout", function(e) {
+    $(self.painting_surface).bind("mouseout", function(e) {
       active = false;
       add_to_queue({ type: "nil" });
     });
 
     // When the mouse goes up we don't paint
-    $(self.painting.node).bind("mouseup", function(e) {
+    $(self.painting_surface).bind("mouseup", function(e) {
       if (has_moved === false) {
         enqueue_coords(e, "dot");
       }
@@ -99,7 +99,7 @@ var Painter = (function() {
     });
 
     // When the mouse moves we might paint... it depends
-    $(self.painting.node).bind("mousemove", function(e) {
+    $(self.painting_surface).bind("mousemove", function(e) {
       enqueue_coords(e, "line");
     });
   };
