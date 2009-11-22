@@ -1,10 +1,9 @@
-%a#clear{ :href => "#", :title => "Clear" } Clear
-#painting
-  \&nbsp;
-%ul.colours
-  %li
-    %a.to-blue{ :href => "#", :title => "Blue" } Blue
-  %li
-    %a.to-black{ :href => "#", :title => "Black" } Black
-  %li
-    %a.to-red{ :href => "#", :title => "Red" } Red
+- if !@paintings.empty?
+  %ul.paintings-list
+    - @paintings.each do |painting|
+      %li
+        %a{ :href => "/paintings/#{painting.id}", :title => "Paint on this painting" }= painting.name
+- else
+  %p
+    There are no paintings! You're going to have to go and
+    %a{ :href => "/paintings/new", :title => "Start a new painting" } begin one

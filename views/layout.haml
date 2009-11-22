@@ -13,5 +13,6 @@
 
   %body
     .container
-      %h1 It's a painting
-      = yield
+      %h1
+        %a{ :href => "/", :title => "Back to home", :rel => "home" } It's a painting
+      #content= yield

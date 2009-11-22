@@ -3,14 +3,15 @@ html body * span.clear,html body * div.clear,html body * li.clear,html body * dd
 .container {width:900px;padding:9px 10px;margin:0 auto}
 
   h1 {float:left}
-  a#clear {float:right;margin-bottom:9px}
+  #content {clear:both}
+    a#clear {float:right;margin-bottom:9px}
 
-  #painting {clear:both;width:900px;height:600px;margin:0 0 9px 0;border:1px solid #ccc;cursor:crosshair}
+    #painting {clear:both;width:900px;height:600px;margin:0 0 9px 0;border:1px solid #ccc;cursor:crosshair}
 
-  .colours {height:18px}
-    .colours li {float:left;margin-right:10px}
-      .colours a {display:block;text-indent:-999em;width:16px;height:16px;background-color:black}
-      .colours a:link, .colours a:visited {border:2px solid #fff}
-      .colours a:hover, .colours a.active:link, .colours a.active:visited, .colours a.active:active, .colours a.active:hover, .colours a.active:focus {border-color:#aaa}
-      .colours .to-blue {background-color:blue}
-      .colours .to-red {background-color:red}
+    .colours {height:18px}
+      .colours li {float:left;margin-right:10px}
+        .colours a {display:block;text-indent:-999em;width:16px;height:16px;background-color:black}
+        .colours a:link, .colours a:visited {border:2px solid #fff}
+        .colours a:hover, .colours a.active:link, .colours a.active:visited, .colours a.active:active, .colours a.active:hover, .colours a.active:focus {border-color:#aaa}
+        .colours .to-blue {background-color:blue}
+        .colours .to-red {background-color:red}
