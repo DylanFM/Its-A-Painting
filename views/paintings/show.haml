@@ -8,7 +8,10 @@
   %script{ :src => "/javascripts/application.js", :type => "text/javascript", :charset => "utf-8" }
 
 - content_for :before_content do
-  %a#clear{ :href => "#", :title => "Clear", :class => "grey awesome" } Clear
+  .buttons
+    %a#clear{ :href => "#", :title => "Clear", :class => "grey awesome" } Clear
+    %a#save{ :href => "#", :title => "Save", :class => "green awesome" } Save
+    %a#refresh{ :href => "#", :title => "Refresh", :class => "blue awesome" } Refresh
 
 #painting{ :rel => "id-#{@painting.id}" }
   \&nbsp;

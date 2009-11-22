@@ -5,7 +5,22 @@ $(function() {
   
   var canvas = $("#painting"),
       id = $(canvas).attr("rel").replace("id-", ""),
-      polling = {};
+      get_history = function() {
+        $.getJSON("/paintings/" + id + "/history", function(data) {
+          painting.clear_painting();
+          painting.add_many_to_queue(data);
+        });
+      },
+      send_history = function() {
+        var history = painting.history;
+        if (history && history.length > 0) {
+          $.post("/paintings/" + id + "/history/update", {
+            history: JSON.stringify(history)
+          }, function(data) {
+            console.log(data);
+          }, "json");
+        }
+      };
   
   // This is the painting
   painting = $(canvas).isAPainting({
@@ -13,24 +28,14 @@ $(function() {
     colours: $(".colours a")
   });
   
-  // Interval for updating the history
-  var send_history = function() {
-    var history = painting.history;
-    if (history && history.length > 0) {
-      $.post("/paintings/" + id + "/history/update", {
-        history: JSON.stringify(history)
-      }, function(data) {
-        console.log(data);
-      }, "json");
-    }
-  };
-  polling.updates = setInterval(send_history, 2000);
+  $("#save").bind('click', function(event) {
+    send_history();
+    event.preventDefault();
+  });
   
-  var get_history = function() {
-    $.getJSON("/paintings/" + id + "/history", function(data) {
-      painting.add_many_to_queue(data);
-    });
-  };
-  polling.fetches = setInterval(get_history, 2000);
+  $("#refresh").bind('click', function(event) {
+    get_history();
+    event.preventDefault();
+  });
   
 });

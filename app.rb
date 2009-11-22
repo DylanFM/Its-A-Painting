@@ -28,14 +28,23 @@ end
 post '/paintings/:id/history/update' do
   painting = Painting.get(params[:id])
   if painting
-    painting.history = params[:history]
-    if painting.save
+    errors = []
+    history = JSON(params[:history])
+    history.each do |a|
+      action = Action.new
+      action.steps = a.to_json
+      action.painting_id = painting.id
+      if !action.save
+        errors += action.errors
+      end
+    end
+    if errors.empty?
       "Painting history saved"
     else
-      "Painting history was not saved"
+      "Painting history was not saved: #{painting.errors.inspect}"
     end
   else
-    "Painting not found"
+    not_found()
   end
 end
 
@@ -44,6 +53,6 @@ get '/paintings/:id/history' do
   if painting
     painting.history
   else
-    "Painting not found"
+    not_found()
   end
 end

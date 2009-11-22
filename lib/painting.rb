@@ -3,8 +3,11 @@ class Painting
 
   property :id,       Serial
   property :name,     String, :nullable => false
-  property :history,  Text
 
   has n, :actions
+
+  def history
+    "[#{self.actions.collect { |action| action.steps }.join(",")}]"
+  end
 
 end

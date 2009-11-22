@@ -1,6 +1,7 @@
 var Painter = (function() {
 
   var self,
+      busy = false,
       active = false,
       has_moved = false,
       queue = [],
@@ -117,15 +118,16 @@ var Painter = (function() {
   
   var add_many_to_queue = function(steps) {
     $.each(steps, function(i) {
-      switch (this.type) {
+      var action = this;
+      switch (action.type) {
         case "line":
-          $.each(this.points, function(i) {
+          $.each(action.points, function(i) {
             add_to_queue(this);
           });
           break;
         default:
           // nil or dot
-          add_to_queue(this);
+          add_to_queue(action);
       }
     });
   };
@@ -139,15 +141,19 @@ var Painter = (function() {
   var add_clear_functionality = function() {
     // So one can remove their rubbish
     $(self.controls.clear).bind("click", function(e) {
-      var drop;
-      while(drops.length > 0) {
-        drop = drops.shift();
-        if (drop && typeof drop.remove === "function") {
-          drop.remove();
-        }
-      }
+      clear_painting();
       e.preventDefault();
     });
+  };
+  
+  var clear_painting = function() {
+    var drop;
+    while(drops.length > 0) {
+      drop = drops.shift();
+      if (drop && typeof drop.remove === "function") {
+        drop.remove();
+      }
+    }
   };
   
   var select_current_colour = function() {
@@ -178,15 +184,21 @@ var Painter = (function() {
 
   var paint_from_queue = function() {
     var initial, new_one;
-    if (queue.length > 0) {
-      initial = queue.shift();
-      new_one = drawing_types[initial.type](initial);
-      if (new_one) {
-        if (new_one.added) {
-          drops.push(new_one.added);
+    if (busy === false) {
+      busy = true;
+      if (queue.length > 0) {
+        initial = queue.shift();
+        if (typeof drawing_types[initial.type] === "function") {
+          new_one = drawing_types[initial.type](initial);
+          if (new_one) {
+            if (new_one.added) {
+              drops.push(new_one.added);
+            }
+            history.push(new_one.action);
+          }
         }
-        history.push(new_one.action);
       }
+      busy = false;
     }
   };
   
@@ -211,6 +223,7 @@ var Painter = (function() {
     this.history = history;
     this.queue = queue;
     this.drops = drops;
+    this.clear_painting = clear_painting;
     this.add_many_to_queue = add_many_to_queue;
     this.requeue_history = requeue_history;
     

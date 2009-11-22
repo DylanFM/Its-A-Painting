@@ -60,7 +60,9 @@ a:active, a:hover, a:focus {color:#d45500}
     h1 a:link, h1 a:visited {color:#4F1F00;text-decoration:none}
   #content {clear:both}
     a.start-painting {float:left;margin:7px 0 0 35px}
-    a#clear {float:right;margin-top:7px}
+
+    .buttons {float:right;margin-top:7px}
+      .buttons a {margin-left:10px}
 
     .paintings-list {list-style:disc}
 
