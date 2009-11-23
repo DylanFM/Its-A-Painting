@@ -224,7 +224,7 @@ var Painter = (function() {
       busy = true;
       if (queue.length > 0) {
         initial = queue.shift();
-        if (typeof drawing_types[initial.type] === "function") {
+        if ($.isFunction(drawing_types[initial.type])) {
           new_one = drawing_types[initial.type](initial);
           if (new_one) {
             if (new_one.added) {
