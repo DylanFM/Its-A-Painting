@@ -25,12 +25,13 @@ var Painter = (function() {
             // Get the first point
             var point = action.points[0],
                 steps = "M" + point.coords[0] + " " + point.coords[1], // Begin the line with its coordinates
+                lkey = action.points.length-1,
                 node, i;
             // Then loop through the rest, building the line as we go
             for (i = 1; i < action.points.length; i++) {
               steps += "L" + action.points[i].coords[0] + " " + action.points[i].coords[1];
             }
-            node = self.painting.path(steps).attr({ "stroke-width": point.brush_size, "stroke": point.colour });
+            node = self.painting.path(steps).attr({ "stroke-width": action.points[lkey].brush_size, "stroke": action.points[lkey].colour });
             return node;
           },
           down_event;
@@ -85,7 +86,7 @@ var Painter = (function() {
       paint_from_queue();
     }
     // Poll queue for new dots to paint
-    activity = setInterval(paint_from_queue, 100);
+    activity = setInterval(paint_from_queue, 1);
   };
       
   var attach_events = function() {
