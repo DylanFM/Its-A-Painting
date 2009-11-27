@@ -7,12 +7,11 @@ var Painter = (function() {
       queue = [],
       drops = [],
       history = [],
-      activity,
-      last;
+      down_event = {},
+      activity;
       
   var drawing_types = {
     nil: function() {
-      last = false;
       return {
         added: undefined,
         action: {
@@ -20,34 +19,47 @@ var Painter = (function() {
         }
       };
     },
-    line: function(point) {
-      var steps,
-          action = {
-            type: "line",
-            points: []
+    line: (function() {
+      var action = { type: "line", points: [] },
+          draw_line = function() {
+            // Get the first point
+            var point = action.points[0],
+                steps = "M" + point.coords[0] + " " + point.coords[1], // Begin the line with its coordinates
+                node, i;
+            // Then loop through the rest, building the line as we go
+            for (i = 1; i < action.points.length; i++) {
+              steps += "L" + action.points[i].coords[0] + " " + action.points[i].coords[1];
+            }
+            node = self.painting.path(steps).attr({ "stroke-width": point.brush_size, "stroke": point.colour });
+            return node;
           },
-          to,
-          from;
-      if (last) {
-        from = last;
-        to = point;
-      } else {
-        from = point;
-        to = queue.shift();
-      }
-      steps = "M" + from.coords[0] + " " + from.coords[1];
-      action.points.push(from);
-      while (to && to.type === "line") {
-        steps += "L" + to.coords[0] + " " + to.coords[1];
-        last = to;
-        action.points.push(to);
-        to = queue.shift();
-      }
-      return {
-        added: self.painting.path(steps).attr({ "stroke-width": from.brush_size, "stroke": from.colour }),
-        action: action
+          down_event;
+      return function(point) {
+        var last_node,
+            to_return = { action: undefined, action: undefined };
+        // If this is the beginning of a new line, let's start a new one
+        if (!down_event || point.down_event !== down_event) {
+          down_event = point.down_event;
+          action.points = [point];
+        } else {
+          // Add point to list of points for this line
+          action.points.push(point);
+          // If we're going to redraw this line we should find the last version of it
+          if (action.points.length > 2) {
+            last_node = self.drops.pop();
+          }
+          // Delete the last node and action locally
+          if (last_node && $.isFunction(last_node.remove)) {
+            last_node.remove();
+          }
+          self.history.pop();
+          // Draw the line again and return what the painter needs
+          to_return.added = draw_line();
+          to_return.action = action;
+        }
+        return to_return;
       };
-    },
+    }()),
     dot: function(point) {
       var brush_size = point.brush_size || self.brush_size,
           added = self.painting.circle(point.coords[0], point.coords[1], brush_size);
@@ -81,12 +93,13 @@ var Painter = (function() {
     $(self.painting_surface).bind("mousedown", function(e) {
       active = true;
       has_moved = false;
-      last = undefined;
+      down_event = e;
       e.preventDefault();
     });
     
     $(self.painting_surface).bind("mouseout", function(e) {
       active = false;
+      down_event = {};
       add_to_queue({ type: "nil" });
     });
 
@@ -97,11 +110,13 @@ var Painter = (function() {
       }
       add_to_queue({ type: "nil" }); 
       active = false;
+      down_event = {};
       e.preventDefault();
     });
 
     // When the mouse moves we might paint... it depends
     $(self.painting_surface).bind("mousemove", function(e) {
+      has_moved = true;
       enqueue_coords(e, "line");
       e.preventDefault();
     });
@@ -110,10 +125,9 @@ var Painter = (function() {
   var enqueue_coords = function(e, type) {
     var coords;
     if (active === true) {
-      has_moved = true;
       coords = get_event_coordinates(e);
       if (coords && coords_are_valid(e, coords)) {
-        add_to_queue({ coords: coords, type: type, colour: self.colour, brush_size: self.brush_size });
+        add_to_queue({ coords: coords, type: type, colour: self.colour, brush_size: self.brush_size, timestamp: e.timeStamp, down_event: down_event.timeStamp });
       }
     }
   };
@@ -167,7 +181,7 @@ var Painter = (function() {
   };
   
   var set_brush_size = function(size) {
-    self.brush_size = size;
+    self.brush_size = size;  
   };
   
   var add_clear_functionality = function() {
