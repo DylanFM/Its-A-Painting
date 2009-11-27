@@ -83,12 +83,14 @@ body {background-color:#efefef}
             .colours a:link, .colours a:visited {border:4px solid #ccc}
             .colours a:hover, .colours a.active:link, .colours a.active:visited, .colours a.active:active, .colours a.active:hover, .colours a.active:focus {border-color:transparent}
             .colours .to-blue {background-color:blue}
+            .colours .to-X6CF {background-color:#6CF}
             .colours .to-red {background-color:red}
             .colours .to-white {background-color:white}
             .colours .to-grey {background-color:grey}
             .colours .to-pink {background-color:pink}
             .colours .to-purple {background-color:purple}
             .colours .to-green {background-color:green}
+            .colours .to-XCF6 {background-color:#CF6}
             .colours .to-brown {background-color:brown}
             .colours .to-orange {background-color:orange}
             .colours .to-yellow {background-color:yellow}

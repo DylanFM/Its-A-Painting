@@ -124,11 +124,15 @@ var Painter = (function() {
   };
   
   var enqueue_coords = function(e, type) {
-    var coords;
+    var coords, colour;
     if (active === true) {
       coords = get_event_coordinates(e);
+      colour = self.colour;
       if (coords && coords_are_valid(e, coords)) {
-        add_to_queue({ coords: coords, type: type, colour: self.colour, brush_size: self.brush_size, timestamp: e.timeStamp, down_event: down_event.timeStamp });
+        if ((/^X.*/).test(colour)) {
+          colour = colour.replace("X", "#");
+        }
+        add_to_queue({ coords: coords, type: type, colour: colour, brush_size: self.brush_size, timestamp: e.timeStamp, down_event: down_event.timeStamp });
       }
     }
   };
