@@ -20,8 +20,7 @@ var Painter = (function() {
       };
     },
     line: (function() {
-      var action = { type: "line", points: [] },
-          draw_line = function() {
+      var draw_line = function() {
             // Get the first point
             var point = action.points[0],
                 steps = "M" + point.coords[0] + " " + point.coords[1], // Begin the line with its coordinates
@@ -34,14 +33,26 @@ var Painter = (function() {
             node = self.painting.path(steps).attr({ "stroke-width": action.points[lkey].brush_size, "stroke": action.points[lkey].colour });
             return node;
           },
-          down_event;
+          reset_action = function() {
+            action = { type: "line", points: [] };
+          },
+          action, down_event;
       return function(point) {
         var last_node,
             to_return = { action: undefined, action: undefined };
         // If this is the beginning of a new line, let's start a new one
-        if (!down_event || point.down_event !== down_event) {
-          down_event = point.down_event;
-          action.points = [point];
+        if (!down_event || point.down_event !== down_event || action.points === undefined) {
+          if (point.down_event) {
+            down_event = point.down_event;
+            reset_action();
+            action.points.push(point);
+          } else {  
+            reset_action();
+            action.points = point.points;
+            to_return.added = draw_line();
+            to_return.action = action;
+            reset_action();
+          }
         } else {
           // Add point to list of points for this line
           action.points.push(point);
@@ -153,17 +164,7 @@ var Painter = (function() {
   
   var add_many_to_queue = function(steps) {
     $.each(steps, function(i) {
-      var action = this;
-      switch (action.type) {
-        case "line":
-          $.each(action.points, function(i) {
-            add_to_queue(this);
-          });
-          break;
-        default:
-          // nil or dot
-          add_to_queue(action);
-      }
+      add_to_queue(this);
     });
   };
   
