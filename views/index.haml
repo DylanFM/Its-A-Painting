@@ -6,7 +6,9 @@
   %ul.paintings-list
     - @paintings.each do |painting|
       %li
-        %a{ :href => "/paintings/#{painting.id}", :title => "Paint on this painting" }= painting.name
+        %em= painting.name
+        %a{ :href => "/paintings/#{painting.id}/edit", :title => "Paint on this painting" } Paint
+        %a{ :href => "/paintings/#{painting.id}", :title => "View this painting" } View
 - else
   %p
     There are no paintings! You're going to have to go and

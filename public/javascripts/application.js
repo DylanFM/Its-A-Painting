@@ -24,13 +24,13 @@ $(function() {
   
   // This is the painting
   painting = $(canvas).isAPainting({
-    clear: $("#clear"),
-    colours: $(".colours a"),
-    brush_size: $("#slider"),
-    painting_surface: $("#painting_surface")
-  }, {
-    state: state
-  });
+      clear: $("#clear"),
+      colours: $(".colours a"),
+      brush_size: $("#slider"),
+      painting_surface: $("#painting_surface") }, 
+      { state: state }, 
+      $("#studio").hasClass("paintable")
+    );
   
   $("#save").bind('click', function(event) {
     send_history();

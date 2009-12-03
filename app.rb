@@ -17,7 +17,17 @@ end
 
 get '/paintings/new' do
   painting = Painting.create(:name => "It's a Masterpiece")
-  redirect "/paintings/#{painting.id}"
+  redirect "/paintings/#{painting.id}/edit"
+end
+
+get '/paintings/:id/edit' do
+  @painting = Painting.get(params[:id])
+  if @painting
+    @title = "called &ldquo;#{@painting.name}&rdquo; and you're working on it"
+    haml :"paintings/edit"
+  else
+    not_found()
+  end
 end
 
 get '/paintings/:id' do

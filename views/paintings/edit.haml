@@ -12,13 +12,49 @@
 - content_for :before_content do
   .utilities
     #painting-name= @painting.name
+    %a#clear{ :href => "#", :title => "Clear", :class => "grey awesome" } Clear
+    %a#save{ :href => "#", :title => "Save", :class => "green awesome" } Save
+    %a#refresh{ :href => "#", :title => "Refresh", :class => "blue awesome" } Refresh
 
-#studio
+#studio.paintable
 
   #painting{ :rel => "id-#{@painting.id}" }
     \&nbsp;
 
   #painting_surface
+    \&nbsp;
+
+.controls
+
+  %ul.colours
+    %li
+      %a.to-black{ :href => "#", :title => "Black" } Black
+    %li
+      %a.to-grey{ :href => "#", :title => "Grey" } Grey
+    %li
+      %a.to-white{ :href => "#", :title => "White" } White
+    %li
+      %a.to-blue{ :href => "#", :title => "Blue" } Blue
+    %li
+      %a.to-X6CF{ :href => "#", :title => "Light blue" } Light blue
+    %li
+      %a.to-purple{ :href => "#", :title => "Purple" } Purple
+    %li
+      %a.to-pink{ :href => "#", :title => "Pink" } Pink
+    %li
+      %a.to-red{ :href => "#", :title => "Red" } Red
+    %li
+      %a.to-brown{ :href => "#", :title => "Brown" } Brown
+    %li
+      %a.to-orange{ :href => "#", :title => "Orange" } Orange
+    %li
+      %a.to-yellow{ :href => "#", :title => "Yellow" } Yellow
+    %li
+      %a.to-green{ :href => "#", :title => "Green" } Green
+    %li
+      %a.to-XCF6{ :href => "#", :title => "Melon" } Melon
+
+  #slider
     \&nbsp;
 
 :javascript

@@ -3,10 +3,10 @@
   var opts, controls, painting;
   
   $.fn.extend({
-    isAPainting: function(controls, options) {
+    isAPainting: function(controls, options, paintable) {
       controls = controls;
       opts = $.extend({}, $.fn.isAPainting.defaults, options);
-      painting = new Painter(this, controls, opts);
+      painting = new Painter(this, controls, opts, paintable);
       return painting || false;
     }
   });

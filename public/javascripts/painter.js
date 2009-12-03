@@ -274,16 +274,20 @@ var Painter = (function() {
     }
   };
   
-  return function(painting, controls, opts) {
+  return function(painting, controls, opts, paintable) {
     self = this;
     // Sort out the options
     set_options(opts);
     // Initialise the painting
     init_painting(painting);
-    // Attach events
-    attach_events();
-    // Controls for interface
-    setup_controls(controls);
+    
+    // If it's not paintable, just show
+    if (paintable === true) {
+      // Attach events
+      attach_events();
+      // Controls for interface
+      setup_controls(controls);
+    }
     
     // Public methods
     this.history = history;
