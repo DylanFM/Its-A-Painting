@@ -176,14 +176,22 @@ var Painter = (function() {
   };
   
   var add_brush_size_functionality = function() {
+    var current_size_id = "current-brush-size";
     $(self.controls.brush_size).slider({ 
         value: self.opts.default_brush_size, 
         max: self.opts.default_max_brush_size,
         change: function(event, ui) {
-          set_brush_size($(this).slider("value"));
+          var size = $(this).slider("value");
+          // Set the size
+          set_brush_size(size);
+          // Show the size
+          $("#" + current_size_id).text(self.brush_size);
         }
       });
+    // Set the initial size
     set_brush_size($(self.controls.brush_size).slider("value"));
+    // Show the current size to the user
+    $(self.controls.brush_size).after("<span id=\"" + current_size_id + "\">" + self.brush_size + "</span>");
   };
   
   var set_brush_size = function(size) {

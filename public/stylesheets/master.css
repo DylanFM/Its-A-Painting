@@ -95,4 +95,5 @@ body {background-color:#efefef}
             .colours .to-orange {background-color:orange}
             .colours .to-yellow {background-color:yellow}
 
-        #slider {width:300px;float:right;margin-top:-14px}
+        #slider {width:300px;float:right;margin:-14px 40px 0 0}
+        #current-brush-size {float:right;width:30px;margin-top:-16px;color:#555;font-weight:bold}
