@@ -1,6 +1,8 @@
 var Painter = (function() {
 
   var self,
+      el,
+      acceptable_ids,
       busy = false,
       active = false,
       has_moved = false,
@@ -91,6 +93,9 @@ var Painter = (function() {
   var init_painting = function(painting) {
     // Make the raphael canvas
     self.painting = Raphael(painting.attr("id"), self.opts.width, self.opts.height);
+    // We need to know the ids of the painting and surface
+    el = painting;
+    acceptable_ids = [$(el).attr("id"), $(self.controls.painting_surface).attr("id"), $(self.controls.painting_surface).parent().attr("id")];
     // If there's a state supplied, add it to the queue
     if (self.opts.state !== undefined) {
       add_many_to_queue(self.opts.state);
@@ -168,11 +173,12 @@ var Painter = (function() {
     });
   };
   
-  var setup_controls = function(controls) {
-    self.controls = controls;
-    add_clear_functionality();
-    add_colour_selection();
-    add_brush_size_functionality();
+  var setup_controls = function() {
+    if (self.controls) {
+      add_clear_functionality();
+      add_colour_selection();
+      add_brush_size_functionality();
+    }
   };
   
   var add_brush_size_functionality = function() {
@@ -239,11 +245,27 @@ var Painter = (function() {
     return e.srcElement || e.originalTarget.parentNode;
   };
   
+  var target_acceptable = function(target) {
+    var ok = false;
+    if (target) {
+      if ($.browser.mozilla) {
+        ok = $.inArray($(target).attr("id"), acceptable_ids);
+      } else {
+        ok = ($(target).attr("id") === $(self.controls.painting_surface).attr("id"));
+      }
+    }
+    return ok > 0;
+  };
+  
   var get_event_coordinates = function(e) {
 // Return X and Y coordinates for this event
-    var src = get_event_source(e);
-    return [(e.pageX - (src.offsetLeft > 0 ? src.offsetLeft : src.offsetParent.offsetLeft)),
-            (e.pageY - (src.offsetTop > 0 ? src.offsetTop : src.offsetParent.offsetTop))];
+    var src = get_event_source(e),
+        coords;
+    if (target_acceptable(src)) {
+      coords = [(e.pageX - (src.offsetLeft > 0 ? src.offsetLeft : src.offsetParent.offsetLeft)),
+                (e.pageY - (src.offsetTop > 0 ? src.offsetTop : src.offsetParent.offsetTop))];
+    }            
+    return coords;
   };
 
   var paint_from_queue = function() {
@@ -276,6 +298,7 @@ var Painter = (function() {
   
   return function(painting, controls, opts, paintable) {
     self = this;
+    self.controls = controls;
     // Sort out the options
     set_options(opts);
     // Initialise the painting
